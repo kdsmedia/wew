@@ -32,14 +32,22 @@
                 return;
             }
 
-            // Menampilkan informasi akun dengan data dummy
-            result.innerHTML = `
-                <div class="info-block">
-                    <p><strong>Username:</strong> ${username}</p>
-                    <p><strong>Aktif:</strong> [Tanggal dan waktu di sini]</p>
-                    <p><strong>Status Aktif:</strong> [Status di sini]</p>
-                </div>
-            `;
+            // Lakukan permintaan HTTP ke backend Flask
+            fetch(`/check_status?username=${username}`)
+                .then(response => response.json())
+                .then(data => {
+                    result.innerHTML = `
+                        <div class="info-block">
+                            <p><strong>Username:</strong> ${data.username}</p>
+                            <p><strong>Aktif:</strong> ${data.last_post_date}</p>
+                            <p><strong>Status Aktif:</strong> ${data.status}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    result.innerHTML = 'Terjadi kesalahan saat mengambil data.';
+                    console.error('Error:', error);
+                });
         }
     </script>
 </body>

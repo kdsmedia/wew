@@ -14,13 +14,13 @@ def check_tiktok_status(username):
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raises HTTPError for bad responses
-        
+
         soup = BeautifulSoup(response.text, 'html.parser')
         posts = soup.find_all('div', class_='video-feed-item')
 
         status = 'Aktif' if posts else 'Tidak Aktif'
         last_post_date = 'Tidak ada posting' if not posts else 'Posting terbaru ditemukan'
-        
+
         return {
             'username': username,
             'last_post_date': last_post_date,

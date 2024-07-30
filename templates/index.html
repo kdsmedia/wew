@@ -51,5 +51,93 @@
                 });
         }
     </script>
+
+
+<div id="container"></div>
+
+    <!-- Load Three.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    
+    <script>
+        let scene, camera, renderer, bars;
+
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            // Create renderer
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            // Create lights
+            const light = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(light);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(1, 1, 1).normalize();
+            scene.add(directionalLight);
+
+            // Create spectrum bars
+            createBars();
+            
+            // Adjust camera aspect ratio and renderer size on window resize
+            window.addEventListener('resize', onWindowResize, false);
+
+            // Start animation
+            animate();
+        }
+
+        function createBars() {
+            const barCount = 64;
+            const barWidth = 1;
+            const barHeight = 20;
+            const barDepth = 1;
+            const spacing = 2;
+            
+            const geometry = new THREE.BoxGeometry(barWidth, barHeight, barDepth);
+            const material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+            
+            bars = [];
+            for (let i = 0; i < barCount; i++) {
+                const bar = new THREE.Mesh(geometry, material);
+                bar.position.x = (i - barCount / 2) * (barWidth + spacing);
+                bar.position.y = 0;
+                bar.position.z = 0;
+                bars.push(bar);
+                scene.add(bar);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Simulate spectrum data
+            updateBars();
+
+            renderer.render(scene, camera);
+        }
+
+        function updateBars() {
+            for (let i = 0; i < bars.length; i++) {
+                const bar = bars[i];
+                const value = Math.sin(Date.now() * 0.001 + i) * 10 + 10;
+                bar.scale.y = value;
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
+    </script>
 </body>
 </html>

@@ -1,20 +1,20 @@
-from flask import Flask, render_template, jsonify, request
-import os
+from flask import Flask, request, jsonify
 import requests
 from bs4 import BeautifulSoup
+import logging
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+logging.basicConfig(level=logging.INFO)
 
 def check_tiktok_status(username):
     url = f'https://www.tiktok.com/@{username}'
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raises HTTPError for bad responses
+        response.raise_for_status()
+        logging.info(f'Fetched data for {username}: {response.status_code}')
 
+        # Parse response
         soup = BeautifulSoup(response.text, 'html.parser')
         posts = soup.find_all('div', class_='video-feed-item')
 
@@ -27,6 +27,7 @@ def check_tiktok_status(username):
             'status': status
         }
     except requests.RequestException as e:
+        logging.error(f'Error fetching data for {username}: {e}')
         return {
             'username': username,
             'status': 'Tidak Dapat Mengakses Profil',
@@ -38,10 +39,13 @@ def check_status():
     username = request.args.get('username')
     if username:
         data = check_tiktok_status(username)
-        return jsonify(data)
+        response = jsonify(data)
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
     else:
         return jsonify({'error': 'Username tidak diberikan'}), 400
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

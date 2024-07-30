@@ -1,9 +1,13 @@
-from flask import Flask, jsonify, request
+from flask import Flask, render_template, jsonify, request
 import os
 import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 def check_tiktok_status(username):
     url = f'https://www.tiktok.com/@{username}'

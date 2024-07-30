@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Akun TikTok</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { width: 80%; margin: 0 auto; text-align: center; }
+        input[type="text"] { padding: 10px; width: 80%; max-width: 400px; }
+        button { padding: 10px 20px; margin-top: 10px; }
+        .result { margin-top: 20px; text-align: left; }
+        .info-block { border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Monitor Status Akun TikTok</h1>
+        <input type="text" id="username" placeholder="Masukkan nama pengguna TikTok">
+        <button onclick="generateInfo()">Dapatkan Info Akun</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function generateInfo() {
+            var username = document.getElementById('username').value;
+            var result = document.getElementById('result');
+
+            // Jika nama pengguna kosong
+            if (!username) {
+                result.innerHTML = 'Harap masukkan nama pengguna TikTok.';
+                return;
+            }
+
+            // Menampilkan informasi akun dengan data dummy
+            result.innerHTML = `
+                <div class="info-block">
+                    <p><strong>Username:</strong> ${username}</p>
+                    <p><strong>Aktif:</strong> [Tanggal dan waktu di sini]</p>
+                    <p><strong>Status Aktif:</strong> [Status di sini]</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

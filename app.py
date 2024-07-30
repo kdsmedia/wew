@@ -11,9 +11,10 @@ def index():
 
 def check_tiktok_status(username):
     url = f'https://www.tiktok.com/@{username}'
-    response = requests.get(url)
-    
-    if response.status_code == 200:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises HTTPError for bad responses
+        
         soup = BeautifulSoup(response.text, 'html.parser')
         posts = soup.find_all('div', class_='video-feed-item')
 
@@ -25,10 +26,11 @@ def check_tiktok_status(username):
             'last_post_date': last_post_date,
             'status': status
         }
-    else:
+    except requests.RequestException as e:
         return {
             'username': username,
-            'status': 'Tidak Dapat Mengakses Profil'
+            'status': 'Tidak Dapat Mengakses Profil',
+            'error': str(e)
         }
 
 @app.route('/check_status', methods=['GET'])

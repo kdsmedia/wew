@@ -17,35 +17,39 @@
     <div class="container">
         <h1>Monitor Status Akun TikTok</h1>
         <input type="text" id="username" placeholder="Masukkan nama pengguna TikTok">
-        <button onclick="fetchData()">Dapatkan Info Akun</button>
+        <button onclick="generateInfo()">Dapatkan Info Akun</button>
         <div class="result" id="result"></div>
     </div>
 
     <script>
-        function fetchData() {
+        function generateInfo() {
             var username = document.getElementById('username').value;
             var result = document.getElementById('result');
 
-            if (username) {
-                fetch(`/check_status?username=${username}`)
-                    .then(response => response.json())
-                    .then(data => {
+            if (!username) {
+                result.innerHTML = 'Harap masukkan nama pengguna TikTok.';
+                return;
+            }
+
+            fetch(`/check_status?username=${username}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        result.innerHTML = data.error;
+                    } else {
                         result.innerHTML = `
                             <div class="info-block">
                                 <p><strong>Username:</strong> ${data.username}</p>
-                                <p><strong>Aktif:</strong> ${data.last_post_date}</p>
+                                <p><strong>Aktif:</strong> ${data.active}</p>
                                 <p><strong>Status Aktif:</strong> ${data.status}</p>
                             </div>
                         `;
-                    })
-                    .catch(error => console.error('Error:', error));
-            } else {
-                result.innerHTML = 'Harap masukkan nama pengguna TikTok.';
-            }
+                    }
+                })
+                .catch(error => {
+                    result.innerHTML = 'Terjadi kesalahan: ' + error;
+                });
         }
-
-        // Polling setiap 10 detik
-        setInterval(fetchData, 10000);
     </script>
 </body>
 </html>

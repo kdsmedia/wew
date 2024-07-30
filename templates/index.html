@@ -21,7 +21,7 @@
 <body>
     <div class="container">
         <h1>TikTok Monitoring</h1>
-        <input type="text" id="username" placeholder="Masukkan nama pengguna TikTok">
+        <input type="text" id="username" placeholder="@username">
         <button onclick="generateInfo()">GET</button>
         <div class="result" id="result"></div>
     </div>
@@ -32,7 +32,7 @@
             var result = document.getElementById('result');
 
             if (!username) {
-                result.innerHTML = 'Harap masukkan nama pengguna TikTok.';
+                result.innerHTML = 'Harap masukkan username TikTok.';
                 return;
             }
 
